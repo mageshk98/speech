@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
-function App() {
+const App = () => {
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+    isMicrophoneAvailable,
+  } = useSpeechRecognition();
+
+  const handleListening = () => {
+    SpeechRecognition.startListening({ continuous: true });
+  };
+  const handleStopListening = () => {
+    SpeechRecognition.stopListening();
+  };
+  if (!browserSupportsSpeechRecognition) {
+    return <span>Browser doesn't support speech recognition.</span>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <strong>{!isMicrophoneAvailable && `Enable Microphoneaccess`}</strong>
+      <p>Microphone: {isMicrophoneAvailable ? "enabled" : "disabled"}</p>
+      <p>{listening && "Speaking..."}</p>
+      <button onClick={handleListening}>Start</button>
+      <button onClick={handleStopListening}>Stop</button>
+      <button onClick={resetTranscript}>Reset</button>
+      <p>{transcript}</p>
     </div>
   );
-}
-
+};
+// https://codepen.io/Nurutomo2/pen/bKJvmZ?editors=0010 - audio visualizer
 export default App;
